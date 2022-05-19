@@ -117,7 +117,7 @@ metadata:
     service: web
   name: web
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       service: web
@@ -146,6 +146,7 @@ spec:
 
 ---
 
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -160,3 +161,18 @@ spec:
       targetPort: 5000
   selector:
     service: web
+
+---
+
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: web
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: web
+  minReplicas: 5
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
